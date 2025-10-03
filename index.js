@@ -1,7 +1,6 @@
 import express from 'express';
 import qrcode from 'qrcode-terminal';
 import { createRequire } from 'module';
-import fs from 'fs';
 const require = createRequire(import.meta.url);
 const { create } = require('@wppconnect-team/wppconnect');
 
@@ -13,8 +12,6 @@ let isReady = false;
 let sentInBatch = 0;
 let cl = null;
 let message = '';
-let lastChatId = null;
-let seen = new Set();
 const templates = [
     'Привет 👋',
     'Здравствуйте!',
@@ -142,6 +139,7 @@ create({
     headless: true,
     debug: true,
     autoClose: 0,
+    timeout: 120000,
     puppeteerOptions: {
         args: [
             '--no-sandbox',
