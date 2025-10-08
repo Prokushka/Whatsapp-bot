@@ -39,7 +39,7 @@ function enqueueMessage(chats, baseText) {
 // Бесконечный воркер очереди
 async function processQueue() {
     if (!isReady) return;
-    let queue = Math.floor(Math.random() * 6000) + 13000;
+    let queue = Math.floor(Math.random() * 6) + 13;
     while (queue > 0) {
         queue--
         const { number, text } = messageQueue.shift();
