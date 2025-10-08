@@ -39,7 +39,7 @@ function enqueueMessage(chats, baseText) {
 // Бесконечный воркер очереди
 async function processQueue() {
     if (!isReady) return;
-    let queue = 25;
+    let queue = Math.floor(Math.random() * 6000) + 13000;
     while (queue > 0) {
         queue--
         const { number, text } = messageQueue.shift();
@@ -53,7 +53,7 @@ async function processQueue() {
         }
 
         // случайная пауза между сообщениями (3–8 сек)
-        const shortDelay = Math.floor(Math.random() * 5000) + 3000;
+        const shortDelay = Math.floor(Math.random() * 5000) + 4000;
         await new Promise(r => setTimeout(r, shortDelay));
     }
     await scheduleJob(cl)
@@ -91,20 +91,6 @@ async function loadOldChats(){
               return true
           }
         })
-    //     const chats = [];
-    //     for (const contact of filtered) {
-    //         const number = contact.id._serialized;
-    //         if (!seen.has(number)) {
-    //             const results = await cl.getChatById(number);
-    //             if (results.length > 0) {
-    //                 console.log(`Добавлено Номер: ${results[0].id.user}`)
-    //                 chats.push(results[0]);
-    //                 seen.add(number);
-    //             }
-    //             new Promise(() => setTimeout(() => Math.floor(Math.random() * 1500) + 1000))
-    //         }
-    //     }
-    // console.log(`Всего чатов загружено: ${chats.length}`);
 
 }
 
@@ -121,6 +107,7 @@ async function start() {
 
 // Планировщик (каждые 17 минут)
 function scheduleJob() {
+    let rand = Math.floor(Math.random() * 5) * 20 * 60 * 1000
     console.log('Чаты пройдены, задержка 17 минут')
     setInterval(async () => {
         try {
@@ -130,7 +117,7 @@ function scheduleJob() {
         } catch (err) {
             console.error('Ошибка планировщика:', err);
         }
-    }, 17 * 60 * 1000);
+    }, rand);
 }
 
 // Создание клиента
@@ -169,22 +156,3 @@ create({
         console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
     });
 });
-/*
-let chats = [];
-while (true) {
-        const batch = await cl.listChats({
-            onlyUsers: true,
-            count: 400, // максимум, что стабильно работает
-            ...(lastChatId ? { id: lastChatId, direction: 'after' } : {})
-        });
-        console.log(`Добавлено чатов: ${batch.length}`)
-
-
-
-        if (batch.length === 1) break;
-        const newChats = batch.filter(c => !seen.has(c.id._serialized));
-        newChats.forEach(c => seen.add(c.id._serialized));
-
-        lastChatId = batch[batch.length - 1].id._serialized;
-        chats = chats.concat(newChats)
-    }*/
