@@ -39,8 +39,8 @@ function enqueueMessage(chats, baseText) {
 // Бесконечный воркер очереди
 async function processQueue() {
     if (!isReady) return;
-    let queue = Math.floor(Math.random() * 6) + 13;
-    while (queue > 0) {
+    let queue = Math.floor(Math.random() * 6 + 1) + 12;
+    while (queue > 0 && messageQueue.length > 0) {
         queue--
         const { number, text } = messageQueue.shift();
         let num = `${number}@c.us`;
@@ -53,10 +53,10 @@ async function processQueue() {
         }
 
         // случайная пауза между сообщениями (3–8 сек)
-        const shortDelay = Math.floor(Math.random() * 5000) + 4000;
+        let shortDelay = Math.floor(Math.random() * 5000) + 4000;
         await new Promise(r => setTimeout(r, shortDelay));
     }
-    await scheduleJob(cl)
+    await scheduleJob()
 }
 
 // Ждём до утра, если ночь
@@ -107,20 +107,17 @@ async function start() {
 
 // Планировщик (каждые 17 минут)
 function scheduleJob() {
-    async function runBatch() {
-        try {
-            await waitIfNight();
-            console.log('📥 Запуск сбора новых чатов...');
-            await processQueue();
-        } catch (err) {
-            console.error('Ошибка планировщика:', err);
-        }
-        // Случайная задержка от 20 до 100 минут
         let rand = (Math.floor(Math.random() * 5) + 20)  * 60 * 1000;
         console.log(`Чаты пройдены, задержка ${(rand / 60000).toFixed(0)} минут`);
-        setTimeout(runBatch, rand);
-    }
-    runBatch();
+        setTimeout(async () => {
+            try {
+                await waitIfNight();
+                console.log('📥 Запуск сбора новых чатов...');
+                await processQueue();
+            } catch (err) {
+                console.error('Ошибка планировщика:', err);
+            }
+        }, rand);
 }
 
 // Создание клиента
