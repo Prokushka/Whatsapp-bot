@@ -107,9 +107,7 @@ async function start() {
 
 // Планировщик (каждые 17 минут)
 function scheduleJob() {
-    let rand = Math.floor(Math.random() * 5) * 20 * 60 * 1000
-    console.log('Чаты пройдены, задержка 17 минут')
-    setInterval(async () => {
+    async function runBatch() {
         try {
             await waitIfNight();
             console.log('📥 Запуск сбора новых чатов...');
@@ -117,7 +115,12 @@ function scheduleJob() {
         } catch (err) {
             console.error('Ошибка планировщика:', err);
         }
-    }, rand);
+        // Случайная задержка от 20 до 100 минут
+        let rand = (Math.floor(Math.random() * 5) + 20)  * 60 * 1000;
+        console.log(`Чаты пройдены, задержка ${(rand / 60000).toFixed(0)} минут`);
+        setTimeout(runBatch, rand);
+    }
+    runBatch();
 }
 
 // Создание клиента
