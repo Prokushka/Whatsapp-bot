@@ -1,4 +1,4 @@
 {
   "watch": ["*.js"],
-  "ignore": ["session/*", "node_modules/*"]
+  "ignore": ["tokens/*", "node_modules/*"]
 }
