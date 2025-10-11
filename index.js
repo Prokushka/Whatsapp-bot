@@ -39,7 +39,7 @@ function enqueueMessage(chats, baseText) {
 // Бесконечный воркер очереди
 async function processQueue() {
     if (!isReady) return;
-    let queue = Math.floor(Math.random() * 6 + 1) + 12;
+    let queue = Math.floor(Math.random() * 6 + 1) + 9;
     while (queue > 0 && messageQueue.length > 0) {
         queue--
         const { number, text } = messageQueue.shift();
@@ -53,7 +53,7 @@ async function processQueue() {
         }
 
         // случайная пауза между сообщениями (3–8 сек)
-        let shortDelay = Math.floor(Math.random() * 5000) + 4000;
+        let shortDelay = Math.floor(Math.random() * 5000) + 7000;
         await new Promise(r => setTimeout(r, shortDelay));
     }
     await scheduleJob()
@@ -107,7 +107,7 @@ async function start() {
 
 // Планировщик (каждые 17 минут)
 function scheduleJob() {
-        let rand = (Math.floor(Math.random() * 5) + 20)  * 60 * 1000;
+        let rand = (Math.floor(Math.random() * 5) + 24)  * 60 * 1000;
         console.log(`Чаты пройдены, задержка ${(rand / 60000).toFixed(0)} минут`);
         setTimeout(async () => {
             try {
