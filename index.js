@@ -21,7 +21,8 @@ const templates = [
     'Доброго времени суток 👋'
 ];
 
-const tmpProfile = `/tmp/chrome-profile-${Date.now()}`;
+/*const tmpProfile = `/tmp/chrome-profile-${Date.now()}`;*/
+const tmpProfile = `./session-data`;
 
 // Добавляем случайное приветствие
 function getRandomMessage(baseMessage) {
@@ -82,15 +83,21 @@ function waitIfNight() {
 }
 
 async function loadOldChats(){
-        const contacts = await cl.getAllContacts();
+    const contacts = await cl.getAllContacts();
     return contacts.filter(res => {
-          if (
-              res.id.user.length === 11 &&
-              res.id.user[0] === '7'
-          ){
-              return true
-          }
-        })
+        if (
+            res.id.user.length === 11 &&
+            res.id.user.startsWith('7') &&
+            res.isWAContact &&
+            res.isUser &&
+            res.isMyContact &&
+            !res.isMe
+        ){
+            return true
+        }
+    })
+
+
 
 }
 
@@ -98,8 +105,7 @@ async function loadOldChats(){
 async function start() {
 
     const chats = await loadOldChats()
-    console.log(`✅ Все чаты пройдены! Всего: ${chats.length}`);
-
+    console.log(`Все чаты пройдены! Всего: ${chats.length}`);
     enqueueMessage(chats, message);
 
     await processQueue();
